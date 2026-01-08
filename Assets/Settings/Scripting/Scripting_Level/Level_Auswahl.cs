@@ -1,7 +1,9 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Level_Auswahl : MonoBehaviour
 {
+     public string level1 = "Level1";
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -9,13 +11,18 @@ public class Level_Auswahl : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     void OnMouseDown()
     {
-        Debug.Log("Funktioniert");
+
+        
+            Debug.Log("Funktioniert");
+            SceneManager.LoadScene(level1);
+        
     }
+
+    
+  
+   
 }
+
