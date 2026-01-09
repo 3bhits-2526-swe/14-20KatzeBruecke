@@ -11,6 +11,10 @@ public class BridgeManager : MonoBehaviour
 
     public GameObject bridgePrefab;
 
+    public GameObject previewPrefab;
+    private GameObject previewInstance;
+
+
     private void Awake()
     {
         Instance = this;
@@ -28,6 +32,13 @@ public class BridgeManager : MonoBehaviour
         if (firstNode == null || secondNode == null)
             return;
 
+            if (previewInstance != null)
+{
+    UpdatePreviewTransform(previewInstance, firstNode.position, secondNode.position);
+    Destroy(previewInstance);
+}
+
+
         Vector3 pos = (firstNode.position + secondNode.position) / 2f;
         Vector3 dir = secondNode.position - firstNode.position;
 
@@ -42,4 +53,31 @@ public class BridgeManager : MonoBehaviour
 
         bridge.transform.localScale = new Vector3(length, 1f, 1f);
     }
+
+    public void ShowPreviewAtFirstNode()
+{
+    if (previewInstance != null)
+        Destroy(previewInstance);
+
+    previewInstance = Instantiate(
+        previewPrefab,
+        firstNode.position,
+        Quaternion.identity
+    );
+}
+
+private void UpdatePreviewTransform(GameObject obj, Vector3 a, Vector3 b)
+{
+    Vector3 pos = (a + b) / 2f;
+    Vector3 dir = b - a;
+
+    float length = dir.magnitude;
+    float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
+    obj.transform.position = pos;
+    obj.transform.rotation = Quaternion.Euler(0, 0, angle);
+    obj.transform.localScale = new Vector3(length, 1f, 1f);
+}
+
+
 }

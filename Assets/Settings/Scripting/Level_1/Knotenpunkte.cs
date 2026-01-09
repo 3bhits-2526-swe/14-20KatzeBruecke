@@ -10,6 +10,7 @@ public class Knotenpunkt : MonoBehaviour
         if (BridgeManager.Instance.firstNode == null)
         {
             BridgeManager.Instance.firstNode = transform;
+            BridgeManager.Instance.ShowPreviewAtFirstNode();
             Debug.Log("Erster Knoten gewählt");
         }
         else if (BridgeManager.Instance.secondNode == null)

@@ -2,15 +2,9 @@ using UnityEngine;
 
 public class Zuckerstange : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void OnMouseDown()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        BridgeManager.Instance.ActivateBridgeMode();
+        Debug.Log("Brückenmodus AKTIV");
     }
 }
