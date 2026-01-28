@@ -5,17 +5,17 @@ public class BridgeManager : MonoBehaviour
     public static BridgeManager Instance;
 
     public bool bridgeMode;
+
     public Transform firstNode;
     public Transform secondNode;
 
     public GameObject bridgePrefab;
     public GameObject previewPrefab;
-    private GameObject previewInstance;
-
     public GameObject candyPrefab;
 
-    public GameObject parentcandy;
+    public Transform parentcandy;
 
+    private GameObject previewInstance;
 
     private void Awake()
     {
@@ -31,66 +31,66 @@ public class BridgeManager : MonoBehaviour
 
     public void CreateBridge()
     {
-        if (firstNode == null || secondNode == null)
+        if (!bridgeMode || firstNode == null || secondNode == null)
             return;
 
         if (previewInstance != null)
-        {
-            UpdatePreviewTransform(previewInstance, firstNode.position, secondNode.position);
             Destroy(previewInstance);
-        }
 
         Vector3 pos = (firstNode.position + secondNode.position) / 2f;
         Vector3 dir = secondNode.position - firstNode.position;
-        float length = dir.magnitude;
+
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
-        GameObject bridge = Instantiate(bridgePrefab, pos, Quaternion.Euler(0, 0, angle));
-        bridge.transform.localScale = new Vector3(length, 1f, 1f);
+        GameObject bridge = Instantiate(
+            bridgePrefab,
+            pos,
+            Quaternion.Euler(0, 0, angle)
+        );
 
-        // Optional: Zuckerstange direkt mit erstellen
-        if (candyPrefab != null)
-        {
-            GameObject candy = Instantiate(candyPrefab, pos, Quaternion.Euler(0, 0, angle));
-            Vector3 originalScale = candy.transform.localScale;
-            candy.transform.localScale = new Vector3(length, originalScale.y, originalScale.z);
-        }
+        bridge.transform.localScale =
+            new Vector3(dir.magnitude, 1f, 1f);
+
+        SpawnCandy();
+
+        bridgeMode = false;
     }
 
     public void ShowPreviewAtFirstNode()
     {
-        if (firstNode == null) return;
+        if (!bridgeMode || firstNode == null)
+            return;
 
         if (previewInstance != null)
             Destroy(previewInstance);
 
-        previewInstance = Instantiate(previewPrefab, firstNode.position, Quaternion.identity);
+        previewInstance = Instantiate(
+            previewPrefab,
+            firstNode.position,
+            Quaternion.identity
+        );
     }
 
-    private void UpdatePreviewTransform(GameObject obj, Vector3 a, Vector3 b)
-    {
-        Vector3 pos = (a + b) / 2f;
-        Vector3 dir = b - a;
-        float length = dir.magnitude;
-        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+   public void SpawnCandy()
+{
+    if (candyPrefab == null || firstNode == null || secondNode == null)
+        return;
 
-        obj.transform.position = pos;
-        obj.transform.rotation = Quaternion.Euler(0, 0, angle);
-        obj.transform.localScale = new Vector3(length, 1f, 1f);
-    }
+    Vector3 pos = (firstNode.position + secondNode.position) / 2f;
+    Vector3 dir = secondNode.position - firstNode.position;
+    float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
-    public void SpawnCandy()
-    {
-       /* if (firstNode == null || secondNode == null || candyPrefab == null)
-            return;
+    GameObject candy = Instantiate(
+        candyPrefab,
+        pos,
+        Quaternion.Euler(0, 0, angle)
+    );
 
-        Vector3 pos = (firstNode.position + secondNode.position) / 2f;
-        Vector3 dir = secondNode.position - firstNode.position;
-        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        */
-        GameObject candy = Instantiate(candyPrefab, Vector3.zero, Quaternion.identity);
-candy.transform.SetParent(parentcandy.transform, false); // false = lokal anpassen, true = Weltposition behalten
+    candy.transform.SetParent(parentcandy, true); // true = worldPosition behalten
 
-        
-    }
+    Vector3 scale = candy.transform.localScale;
+    candy.transform.localScale =
+        new Vector3(dir.magnitude, scale.y, scale.z);
+}
+
 }

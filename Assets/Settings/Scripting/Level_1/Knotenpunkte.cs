@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Knotenpunkt : MonoBehaviour
+public class Knotenpunkte : MonoBehaviour
 {
     private void OnMouseDown()
     {
@@ -11,14 +11,11 @@ public class Knotenpunkt : MonoBehaviour
         {
             BridgeManager.Instance.firstNode = transform;
             BridgeManager.Instance.ShowPreviewAtFirstNode();
-            Debug.Log("Erster Knoten gewählt");
         }
-        else if (BridgeManager.Instance.secondNode == null)
+        else if (BridgeManager.Instance.secondNode == null &&
+                 BridgeManager.Instance.firstNode != transform)
         {
             BridgeManager.Instance.secondNode = transform;
-            Debug.Log("Zweiter Knoten gewählt");
-
-            BridgeManager.Instance.bridgeMode = false;
             BridgeManager.Instance.CreateBridge();
         }
     }
